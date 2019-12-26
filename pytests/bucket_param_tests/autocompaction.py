@@ -91,7 +91,7 @@ class AutoCompactionTests(BaseTestCase):
                         batch_size=10,
                         process_concurrency=8)
                     self.task.jython_task_manager.get_task_result(task)
-            except Exception, ex:
+            except Exception as ex:
                 self.is_crashed.set()
                 self.log.error("Load cannot be performed: %s" % str(ex))
         if monitor_fragm.result is False:
@@ -442,7 +442,7 @@ class AutoCompactionTests(BaseTestCase):
                     result = active_task.result()
                     self.assertTrue(result)
                     self.sleep(2)
-            except Exception, ex:
+            except Exception as ex:
                 self.log.error("Load cannot be performed: %s" % str(ex))
                 self.fail(ex)
         monitor_fragm.result()
@@ -571,7 +571,7 @@ class AutoCompactionTests(BaseTestCase):
             remote_client.wait_till_compaction_end(rest,
                                                    self.bucket.name,
                                                    self.wait_timeout)
-        except Exception, ex:
+        except Exception as ex:
             self.is_crashed.set()
             self.log.error("Failed to cancel compaction: %s" % str(ex))
         remote_client.disconnect()
@@ -604,7 +604,7 @@ class AutoCompactionTests(BaseTestCase):
                               % self.wait_timeout * 30)
                 try:
                     self._load_all_buckets(self.gen_update, "update")
-                except Exception, ex:
+                except Exception as ex:
                     self.log.error("Load cannot be performed: %s" % str(ex))
                     self.fail(ex)
             self.task.jython_task_manager.get_task_result(monitor_fragm)

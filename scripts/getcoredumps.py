@@ -218,7 +218,7 @@ def main():
                 "ERROR: no servers specified. Please use the -i parameter.")
     except IndexError:
         usage()
-    except getopt.GetoptError, error:
+    except getopt.GetoptError as error:
         usage("ERROR: " + str(error))
 
     file_path = input.param("path", ".")

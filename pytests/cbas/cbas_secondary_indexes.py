@@ -470,7 +470,7 @@ class CBASSecondaryIndexes(CBASBaseTest):
                     host = "{0}:{1}".format(self.master.ip, self.master.port)
                 return SDKClient(scheme=scheme, hosts=[host], bucket=bucket,
                                  password=self.master.rest_password)
-            except Exception, ex:
+            except Exception as ex:
                 self.log.error("cannot load sdk client due to error {0}"
                                .format(str(ex)))
         # USE MC BIN CLIENT WHEN NOT USING SDK CLIENT

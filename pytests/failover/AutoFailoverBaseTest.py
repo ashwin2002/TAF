@@ -306,7 +306,7 @@ class AutoFailoverBaseTest(BaseTestCase):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
 
     def disable_firewall(self):
@@ -323,7 +323,7 @@ class AutoFailoverBaseTest(BaseTestCase):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
 
     def restart_couchbase_server(self):
@@ -345,7 +345,7 @@ class AutoFailoverBaseTest(BaseTestCase):
         self.sleep(30, "Waiting for couchbase-server to come up")
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
 
     def stop_couchbase_server(self):
@@ -383,7 +383,7 @@ class AutoFailoverBaseTest(BaseTestCase):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
 
     def stop_restart_network(self):
@@ -406,7 +406,7 @@ class AutoFailoverBaseTest(BaseTestCase):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
 
     def restart_machine(self):
@@ -428,7 +428,7 @@ class AutoFailoverBaseTest(BaseTestCase):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
 
             self.fail("Exception: {}".format(e))
         finally:
@@ -464,7 +464,7 @@ class AutoFailoverBaseTest(BaseTestCase):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
         finally:
             task = AutoFailoverNodesFailureTask(
@@ -492,7 +492,7 @@ class AutoFailoverBaseTest(BaseTestCase):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
         self.disable_firewall()
 
@@ -598,7 +598,7 @@ class AutoFailoverBaseTest(BaseTestCase):
                     shell.update_dist_type()
                 shell.disconnect()
             self.sleep(10)
-        except Exception, ex:
+        except Exception as ex:
             self.log.info(ex)
 
     failover_actions = {
@@ -907,7 +907,7 @@ class DiskAutoFailoverBasetest(AutoFailoverBaseTest):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
 
     def fail_disk_via_disk_full(self):
@@ -925,7 +925,7 @@ class DiskAutoFailoverBasetest(AutoFailoverBaseTest):
         self.task_manager.add_new_task(task)
         try:
             self.task_manager.get_task_result(task)
-        except Exception, e:
+        except Exception as e:
             self.fail("Exception: {}".format(e))
 
     def bring_back_failed_nodes_up(self):
@@ -941,7 +941,7 @@ class DiskAutoFailoverBasetest(AutoFailoverBaseTest):
             self.task_manager.add_new_task(task)
             try:
                 self.task_manager.get_task_result(task)
-            except Exception, e:
+            except Exception as e:
                 self.fail("Exception: {}".format(e))
         elif self.failover_action == "disk_full":
             task = AutoFailoverNodesFailureTask(
@@ -955,7 +955,7 @@ class DiskAutoFailoverBasetest(AutoFailoverBaseTest):
             self.task_manager.add_new_task(task)
             try:
                 self.task_manager.get_task_result(task)
-            except Exception, e:
+            except Exception as e:
                 self.fail("Exception: {}".format(e))
         else:
             super(DiskAutoFailoverBasetest, self).bring_back_failed_nodes_up()

@@ -290,7 +290,7 @@ class UpgradeBase(BaseTestCase):
             remote.disconnect()
             self.sleep(10)
             return o, e
-        except Exception, e:
+        except Exception as e:
             self.log.error(e)
             if queue is not None:
                 queue.put(False)

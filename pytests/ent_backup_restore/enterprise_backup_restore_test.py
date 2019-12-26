@@ -1104,7 +1104,7 @@ class EnterpriseBackupRestoreTest(EnterpriseBackupRestoreBase, NewUpgradeBaseTes
             try:
                 self.log.info("Create fts index")
                 rest_fts.create_fts_index(index_name, index_definition)
-            except Exception, ex:
+            except Exception as ex:
                 self.fail(ex)
         else:
             gen = BlobGenerator("ent-backup", "ent-backup-", self.value_size,
@@ -2560,7 +2560,7 @@ class EnterpriseBackupRestoreTest(EnterpriseBackupRestoreBase, NewUpgradeBaseTes
             else:
                 self.fail("Failed to establish connection to bucket on cluster host"
                           " using python SDK")
-        except Exception, ex:
+        except Exception as ex:
             self.fail(str(ex))
         self.log.info("Loading bucket with data using python SDK")
         for i in range(1, self.num_items + 1):
@@ -2586,7 +2586,7 @@ class EnterpriseBackupRestoreTest(EnterpriseBackupRestoreBase, NewUpgradeBaseTes
             else:
                 self.fail("Failed to establish connection to bucket on restore " \
                           "host using python SDK")
-        except Exception, ex:
+        except Exception as ex:
             self.fail(str(ex))
         restore_host_data = {}
         for i in range(1, self.num_items + 1):
@@ -3283,7 +3283,7 @@ class EnterpriseBackupRestoreTest(EnterpriseBackupRestoreBase, NewUpgradeBaseTes
                 bucket_name="default")
             fts_obj.wait_for_indexing_complete()
             alias = fts_obj.create_alias(target_indexes=[index])
-        except Exception, ex:
+        except Exception as ex:
             self.fail(ex)
         self.backup_cluster_validate()
         rest_target = RestConnection(self.backupset.restore_cluster_host)

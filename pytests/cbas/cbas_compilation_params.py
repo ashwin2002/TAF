@@ -85,7 +85,7 @@ class CBASCompilationParamsTests(CBASBaseTest):
                 self.fail("Unexpected failure")
             elif self.expect_failure and status == "success":
                 self.fail("Unexpected success")
-        except Exception, e:
+        except Exception as e:
             if str(e) == "Request Rejected":
                 self.log.info("Error 503 : Request Rejected")
             elif str(e) == "Capacity cannot meet job requirement":
@@ -114,7 +114,7 @@ class CBASCompilationParamsTests(CBASBaseTest):
                 self.fail("Unexpected failure")
             elif self.expect_failure and status == "success":
                 self.fail("Unexpected success")
-        except Exception, e:
+        except Exception as e:
             if str(e) == "Request Rejected":
                 self.log.info("Error 503 : Request Rejected")
             elif str(e) == "Capacity cannot meet job requirement":
@@ -136,7 +136,7 @@ class CBASCompilationParamsTests(CBASBaseTest):
                 self.fail("Unexpected failure")
             elif self.expect_failure and status == "success":
                 self.fail("Unexpected success")
-        except Exception, e:
+        except Exception as e:
             if str(e) == "Request Rejected":
                 self.log.info("Error 503 : Request Rejected")
             elif str(e) == "Capacity cannot meet job requirement":

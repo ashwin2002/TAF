@@ -8,9 +8,10 @@ from membase.api.exception import FailoverFailedException, \
     ServerUnavailableException, BucketFlushFailed
 from membase.api.rest_client import RestConnection
 from testconstants import MIN_KV_QUOTA, INDEX_QUOTA, FTS_QUOTA, CBAS_QUOTA
+"""
 from java.util.concurrent import Callable, TimeUnit, CancellationException, \
     TimeoutException
-
+"""
 
 CHECK_FLAG = False
 

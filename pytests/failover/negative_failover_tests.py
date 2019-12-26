@@ -22,7 +22,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             self.assertTrue(status," Rebalance did not run ")
             success_failed_over = self.rest.fail_over(chosen[0].id, graceful=True)
             self.assertFalse(success_failed_over," Failover did not fail as expected ")
-        except Exception,ex:
+        except Exception asex:
             self.assertTrue(("Rebalance running" in str(ex)),"unexpected exception {0}".format(ex))
 
     def graceful_failover_when_graceful_failover_running(self):
@@ -34,7 +34,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             self.assertTrue(success_failed_over," Failover failed ")
             success_failed_over = self.rest.fail_over(chosen[0].id, graceful=True)
             self.assertFalse(success_failed_over," Failover did not fail as expected ")
-        except Exception,ex:
+        except Exception asex:
             self.assertTrue(("Rebalance running" in str(ex)),"unexpected exception {0}".format(ex))
 
     def hard_failover_when_graceful_failover_running(self):
@@ -46,7 +46,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             self.assertTrue(success_failed_over," Failover failed ")
             success_failed_over = self.rest.fail_over(chosen[0].id, graceful=False)
             self.assertFalse(success_failed_over," Failover did not fail as expected ")
-        except Exception,ex:
+        except Exception asex:
             self.assertTrue(("Rebalance running" in str(ex)),"unexpected exception {0}".format(ex))
 
     def hard_failover_nonexistant_node(self):
@@ -55,7 +55,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             nodes = self.cluster_util.get_nodes(self.cluster.master)
             success_failed_over = self.rest.fail_over("non-existant", graceful=False)
             self.assertFalse(success_failed_over," Failover did not fail as expected ")
-        except Exception,ex:
+        except Exception asex:
             self.assertTrue(("Unknown server given" in str(ex)),"unexpected exception {0}".format(ex))
 
     def graceful_failover_nonexistant_node(self):
@@ -64,7 +64,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             nodes = self.cluster_util.get_nodes(self.cluster.master)
             success_failed_over = self.rest.fail_over("non-existant", graceful=True)
             self.assertFalse(success_failed_over," Failover did not fail as expected ")
-        except Exception,ex:
+        except Exception asex:
             self.assertTrue(("Unknown server given" in str(ex)),"unexpected exception {0}".format(ex))
 
     def failover_failed_node(self):
@@ -76,7 +76,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             self.assertTrue(success_failed_over," Failover did not happen as expected ")
             fail_failed_over = self.rest.fail_over(chosen[0].id, graceful=False)
             self.assertFalse(fail_failed_over," Failover did not fail as expected ")
-        except Exception,ex:
+        except Exception asex:
             self.assertTrue(("Unknown server given" in str(ex)),"unexpected exception {0}".format(ex))
 
     def addback_non_existant_node(self):
@@ -89,7 +89,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             # Mark Node for full recovery
             if success_failed_over:
                 self.rest.set_recovery_type(otpNode="non-existant", recoveryType="delta")
-        except Exception, ex:
+        except Exception as ex:
             self.assertTrue(("invalid node name or node" in str(ex)),"unexpected exception {0}".format(ex))
 
     def addback_an_unfailed_node(self):
@@ -98,7 +98,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             nodes = self.cluster_util.get_nodes(self.cluster.master)
             chosen = self.cluster_util.pick_nodes(self.cluster.master, howmany=1)
             self.rest.set_recovery_type(otpNode=chosen[0].id, recoveryType="delta")
-        except Exception, ex:
+        except Exception as ex:
             self.assertTrue(("invalid node name or node" in str(ex)),"unexpected exception {0}".format(ex))
 
     def addback_with_incorrect_recovery_type(self):
@@ -111,7 +111,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             # Mark Node for full recovery
             if success_failed_over:
                 self.rest.set_recovery_type(otpNode=chosen[0].id, recoveryType="xxx")
-        except Exception, ex:
+        except Exception as ex:
             self.assertTrue(("recoveryType" in str(ex)),"unexpected exception {0}".format(ex))
 
     def failure_recovery_delta_node_with_failover_node(self):
@@ -127,7 +127,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             servers_out = self.cluster_util.add_remove_servers(self.servers,[],[],[chosen[1]])
             rebalance = self.task.async_rebalance(self.servers[:self.nodes_init], [],servers_out)
             self.task_manager.get_task_result(rebalance)
-        except Exception, ex:
+        except Exception as ex:
             self.assertTrue(("deltaRecoveryNotPossible" in str(ex)),"unexpected exception {0}".format(ex))
 
     def failure_recovery_delta_node_before_rebalance_in(self):
@@ -141,7 +141,7 @@ class NegativeFailoverTests(FailoverBaseTest):
                 self.rest.set_recovery_type(otpNode=chosen[0].id, recoveryType="delta")
             rebalance = self.task.async_rebalance(self.servers[:self.nodes_init], [self.servers[self.nodes_init]], [])
             self.task_manager.get_task_result(rebalance)
-        except Exception, ex:
+        except Exception as ex:
             self.assertTrue(("deltaRecoveryNotPossible" in str(ex)),"unexpected exception {0}".format(ex))
 
     def failure_recovery_delta_node_after_add_node(self):
@@ -157,7 +157,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             self.nodes = self.rest.node_statuses()
             self.rest.rebalance(otpNodes=[node.id for node in self.nodes],ejectedNodes=[])
             self.assertFalse(self.rest.monitorRebalance(stop_if_loop=True), msg="Rebalance did not fail as expected")
-        except Exception, ex:
+        except Exception as ex:
             self.assertTrue(("deltaRecoveryNotPossible" in str(ex)),"unexpected exception {0}".format(ex))
 
     def failure_recovery_delta_node_after_eject_node(self):
@@ -174,7 +174,7 @@ class NegativeFailoverTests(FailoverBaseTest):
             self.nodes = self.rest.node_statuses()
             self.rest.rebalance(otpNodes=[node.id for node in self.nodes],ejectedNodes=[chosen[0].id,eject_out_node.id])
             self.assertFalse(self.rest.monitorRebalance(stop_if_loop=True), msg="Rebalance did not fail as expected")
-        except Exception, ex:
+        except Exception as ex:
             self.assertTrue(("deltaRecoveryNotPossible" in str(ex)),"unexpected exception {0}".format(ex))
 
     def failure_recovery_delta_node_before_rebalance_in_out(self):
@@ -197,7 +197,7 @@ class NegativeFailoverTests(FailoverBaseTest):
                    ejectedNodes.append(server.id)
             self.rest.rebalance(otpNodes=[node.id for node in self.nodes],ejectedNodes=ejectedNodes)
             self.assertFalse(self.rest.monitorRebalance(stop_if_loop=True), msg="Rebalance did not fail as expected")
-        except Exception, ex:
+        except Exception as ex:
             self.assertTrue(("deltaRecoveryNotPossible" in str(ex)),"unexpected exception {0}".format(ex))
 
     def graceful_failover_unhealthy_node_not_allowed(self):

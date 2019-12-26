@@ -132,7 +132,7 @@ class GleambookMessages_Docloader(Callable):
                     except:
                         pass  
                 self.loaded += 1
-        except Exception, ex:
+        except Exception as ex:
             import traceback
             traceback.print_exc()
             exc_info = sys.exc_info()
@@ -256,7 +256,7 @@ class GleambookUser_Docloader(Callable):
                     except:
                         print "Exception from Java SDK - remove"                    
                 self.loaded += 1
-        except Exception, ex:
+        except Exception as ex:
             import traceback
             traceback.print_exc()
             exc_info = sys.exc_info()
@@ -272,7 +272,7 @@ def shutdown_and_await_termination(pool, timeout):
             pool.shutdownNow()
             if (not pool.awaitTermination(timeout, TimeUnit.SECONDS)):
                 print >> sys.stderr, "Pool did not terminate"
-    except InterruptedException, ex:
+    except InterruptedException as ex:
         # (Re-)Cancel if current thread also interrupted
         pool.shutdownNow()
         # Preserve interrupt status

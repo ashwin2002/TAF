@@ -152,7 +152,7 @@ class RebalanceTask(Task):
         self.result = False
         try:
             self.rest = RestConnection(self.servers[0])
-        except ServerUnavailableException, e:
+        except ServerUnavailableException as e:
             self.test_log.error(e)
             raise e
         self.retry_get_progress = 0
@@ -352,7 +352,7 @@ class RebalanceTask(Task):
             for removed in self.to_remove:
                 try:
                     rest = RestConnection(removed)
-                except ServerUnavailableException, e:
+                except ServerUnavailableException as e:
                     self.test_log.error(e)
                     continue
                 start = time.time()
@@ -364,7 +364,7 @@ class RebalanceTask(Task):
                             break
                         else:
                             time.sleep(0.1)
-                    except (ServerUnavailableException, IncompleteRead), e:
+                    except (ServerUnavailableException as IncompleteRead), e:
                         self.test_log.error(e)
 
             for node in set(self.to_remove) - set(success_cleaned):
@@ -725,7 +725,7 @@ class GenericLoadingTask(Task):
                 self.random.seed(key)
                 index = self.random.choice(range(len(value)))
                 value = value[0:index] + self.random.choice(string.ascii_uppercase) + value[index + 1:]
-            except Exception, e:
+            except Exception as e:
                 self.test_log.error(e)
             finally:
                 key_val[key] = value
@@ -2437,7 +2437,7 @@ class ViewDeleteTask(Task):
                 self.complete_task()
                 return True
 
-        except (ValueError, ReadDocumentException,
+        except (ValueError, ReadDocumentException as
                 DesignDocCreationException) as e:
             self.set_exception(e)
             self.complete_task()
@@ -3133,7 +3133,7 @@ class MonitorDBFragmentationTask(Task):
                                        % new_frag_value)
                     self.set_result(True)
                     break
-            except Exception, ex:
+            except Exception as ex:
                 self.set_result(False)
                 self.set_exception(ex)
             time.sleep(2)

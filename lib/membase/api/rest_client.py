@@ -1,7 +1,7 @@
 import base64
 import json
 import urllib
-import httplib2
+import http
 import logging
 import traceback
 import socket
@@ -15,7 +15,7 @@ from BucketLib.bucket import Bucket
 from couchbase_helper import cb_constants
 from testconstants import MIN_KV_QUOTA, INDEX_QUOTA, FTS_QUOTA, CBAS_QUOTA
 from testconstants import COUCHBASE_FROM_VERSION_4, IS_CONTAINER
-from exception import \
+from membase.api.exception import \
     InvalidArgumentException, \
     ServerAlreadyJoinedException, \
     ServerUnavailableException
@@ -190,7 +190,7 @@ class RestHelper(object):
                     self.test_log.debug('Index for ddoc %s is running, server %s'
                                         % (ddoc_name, server.ip))
                     self._wait_for_task_pid(old_pid, end_time, ddoc_name)
-            except Exception, ex:
+            except Exception as ex:
                 self.test_log.error(
                     "Unable to check index on server %s because of %s"
                     % (server.ip, str(ex)))
@@ -306,9 +306,10 @@ class RestConnection(object):
         if isinstance(bucket, Bucket):
             api = self.baseUrl + 'pools/default/bucketsStreaming/{0}'.format(bucket.name)
         try:
-            httplib2.Http(timeout=timeout).request(api, 'GET', '',
-                                                   headers=self._create_capi_headers())
-        except Exception, ex:
+            http.client.Http(timeout=timeout).request(
+                api, 'GET', '',
+                headers=self._create_capi_headers())
+        except Exception as ex:
             self.test_log.warn('Exception while streaming: %s' % str(ex))
 
     def open_sasl_streaming_connection(self, bucket, timeout=1000):
@@ -713,7 +714,8 @@ class RestConnection(object):
         end_time = time.time() + timeout
         while True:
             try:
-                response, content = httplib2.Http(timeout=timeout).request(api, method, params, headers)
+                response, content = http.client.Http(timeout=timeout).request(
+                    api, method, params, headers)
                 if params.startswith("nodes=ns_1"):
                     self.test_log.info(response)
                     self.test_log.info(content)
@@ -740,7 +742,7 @@ class RestConnection(object):
                                     .format(api, e))
                 if time.time() > end_time:
                     raise ServerUnavailableException(ip=self.ip)
-            except httplib2.ServerNotFoundError as e:
+            except http.client.ServerNotFoundError as e:
                 self.test_log.error("ServerNotFoundError error while connecting to {0} error {1} "
                                     .format(api, e))
                 if time.time() > end_time:
@@ -1127,7 +1129,7 @@ class RestConnection(object):
                 wanted_node = deepcopy(self)
                 wanted_node.ip = remoteIp
                 wanted_node.print_UI_logs()
-            except Exception, ex:
+            except Exception as ex:
                 self.test_log.error(ex)
             if content.find('Prepare join failed. Node is already part of cluster') >= 0:
                 raise ServerAlreadyJoinedException(nodeIp=self.ip,
@@ -1178,7 +1180,7 @@ class RestConnection(object):
                 wanted_node = deepcopy(self)
                 wanted_node.ip = remoteIp
                 wanted_node.print_UI_logs()
-            except Exception, ex:
+            except Exception as ex:
                 self.test_log.error(ex)
             if content.find('Prepare join failed. Node is already part of cluster') >= 0:
                 raise ServerAlreadyJoinedException(nodeIp=self.ip,
@@ -1228,7 +1230,7 @@ class RestConnection(object):
         count_cbserver_up = 0
         while break_out < 60 and count_cbserver_up < 2:
             try:
-                response, content = httplib2.Http(timeout=120).request(api, 'GET', '', headers)
+                response, content = http.client.Http(timeout=120).request(api, 'GET', '', headers)
                 if response['status'] in ['200', '201', '202'] and count_cbserver_up == 0:
                     self.test_log.debug("Couchbase server is up but down soon")
                     time.sleep(1)
@@ -2551,7 +2553,7 @@ class RestConnection(object):
 
     '''Start Monitoring/Profiling Rest Calls'''
     def set_completed_requests_collection_duration(self, server, min_time):
-        http = httplib2.Http()
+        http = http.client.Http()
         api = self.query_baseUrl + "admin/settings"
         body = {"completed-threshold": min_time}
         headers = self._create_headers_with_auth('Administrator', 'password')
@@ -2560,7 +2562,7 @@ class RestConnection(object):
         return response, content
 
     def set_completed_requests_max_entries(self, server, no_entries):
-        http = httplib2.Http()
+        http = http.client.Http()
         api = self.query_baseUrl + "admin/settings"
         body = {"completed-limit": no_entries}
         headers = self._create_headers_with_auth('Administrator', 'password')
@@ -2569,7 +2571,7 @@ class RestConnection(object):
         return response, content
 
     def set_profiling(self, server, setting):
-        http = httplib2.Http()
+        http = http.client.Http()
         api = self.query_baseUrl + "admin/settings"
         body = {"profile": setting}
         headers = self._create_headers_with_auth('Administrator', 'password')
@@ -2578,7 +2580,7 @@ class RestConnection(object):
         return response, content
 
     def set_profiling_controls(self, server, setting):
-        http = httplib2.Http()
+        http = http.client.Http()
         api = self.query_baseUrl + "admin/settings"
         body = {"controls": setting}
         headers = self._create_headers_with_auth('Administrator', 'password')
@@ -2587,7 +2589,7 @@ class RestConnection(object):
         return response, content
 
     def get_query_admin_settings(self, server):
-        http = httplib2.Http()
+        http = http.client.Http()
         api = self.query_baseUrl + "admin/settings"
         headers = self._create_headers_with_auth('Administrator', 'password')
         response, content = http.request(api, "GET", headers=headers)
@@ -2595,7 +2597,7 @@ class RestConnection(object):
         return result
 
     def get_query_vitals(self,server):
-        http = httplib2.Http()
+        http = http.client.Http()
         api = self.query_baseUrl + "admin/vitals"
         headers = self._create_headers_with_auth('Administrator', 'password')
         response, content = http.request(api, "GET", headers=headers)
@@ -2610,7 +2612,7 @@ class RestConnection(object):
         prepared = json.dumps(query)
         if is_prepared:
             if named_prepare and encoded_plan:
-                http = httplib2.Http()
+                http = http.client.Http()
                 if len(servers) > 1:
                     url = "http://%s:%s/query/service" % (servers[1].ip, port)
                 else:
@@ -2668,7 +2670,7 @@ class RestConnection(object):
         prepared = json.dumps(query)
         if is_prepared:
             if named_prepare and encoded_plan:
-                http = httplib2.Http()
+                http = http.client.Http()
                 if len(servers)>1:
                     url = "http://%s:%s/query/service" % (servers[1].ip, port)
                 else:
@@ -3071,7 +3073,7 @@ class RestConnection(object):
         header = {'Content-type': 'application/x-www-form-urlencoded'}
         params = urllib.urlencode({'user':'{0}'.format(user), 'password':'{0}'.format(password)})
         self.test_log.info("value of param is {0}".format(params))
-        http = httplib2.Http()
+        http = http.client.Http()
         status, content = http.request(api, 'POST', headers=header, body=params)
         self.test_log.info("Status of login command - {0}".format(status))
         if getContent:

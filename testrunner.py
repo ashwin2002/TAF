@@ -125,9 +125,9 @@ def locate_conf_file(filename):
     print("Filename: %s" % filename)
     if filename:
         if os.path.exists(filename):
-            return file(filename)
+            return open(filename)
         if os.path.exists("conf{0}{1}".format(os.sep, filename)):
-            return file("conf{0}{1}".format(os.sep, filename))
+            return open("conf{0}{1}".format(os.sep, filename))
         return None
 
 

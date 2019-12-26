@@ -1723,7 +1723,7 @@ class EnterpriseBackupMergeBase(EnterpriseBackupRestoreBase):
         try:
             role_del = [bucket.name]
             RbacBase().remove_user_role(role_del, RestConnection(cluster_host))
-        except Exception, ex:
+        except Exception as ex:
             self.log.info(str(ex))
             self.assertTrue(str(ex) == '"User was not found."', str(ex))
 
@@ -1742,7 +1742,7 @@ class EnterpriseBackupMergeBase(EnterpriseBackupRestoreBase):
             else:
                 self.fail("Failed to connect to bucket " + bucket.name + " on " + ip + " using python SDK")
             return cb
-        except Exception, ex:
+        except Exception as ex:
             self.fail(str(ex))
 
     def async_ops_on_buckets(self):
@@ -2550,7 +2550,7 @@ class EnterpriseBackupMergeBase(EnterpriseBackupRestoreBase):
         try:
             self.log.info("Create fts index")
             rest_fts.create_fts_index(index_name, index_definition)
-        except Exception, ex:
+        except Exception as ex:
             self.fail(ex)
 
         if not self.skip_restore_indexes:
@@ -2605,7 +2605,7 @@ class EnterpriseBackupMergeBase(EnterpriseBackupRestoreBase):
                 try:
                     self.log.info("Create fts index")
                     rest_fts.create_fts_index(index_name, index_definition)
-                except Exception, ex:
+                except Exception as ex:
                     self.fail(ex)
         remote_client.disconnect()
 
@@ -2616,7 +2616,7 @@ class EnterpriseBackupMergeBase(EnterpriseBackupRestoreBase):
         try:
             self.log.info("Update fts index")
             rest_fts.update_fts_index("age1", index_definition)
-        except Exception, ex:
+        except Exception as ex:
             self.fail(ex)
 
     def do_backup_merge_actions(self):

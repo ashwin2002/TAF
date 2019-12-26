@@ -151,7 +151,7 @@ def main():
                     "parameter.")
     except IndexError:
         usage()
-    except getopt.GetoptError, error:
+    except getopt.GetoptError as error:
         usage("ERROR: " + str(error))
 
     if not local:

@@ -3,10 +3,10 @@
 # map a version # -> rpm url
 from datetime import datetime
 import time
-import urllib2
+import urllib
 import re
 import socket
-import BeautifulSoup
+from bs4 import BeautifulSoup
 import testconstants
 import logging
 import traceback
@@ -518,7 +518,7 @@ class BuildQuery(object):
                                   % (build_page + index_url))
                     if timeout:
                         socket.setdefaulttimeout(timeout)
-                    page = urllib2.urlopen(build_page + index_url)
+                    page = urllib.urlopen(build_page + index_url)
                     soup = BeautifulSoup.BeautifulSoup(page)
                     break
                 except:

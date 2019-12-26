@@ -8,7 +8,7 @@ import json
 import time
 import urllib
 
-from bucket import Bucket
+from BucketLib.bucket import Bucket
 from membase.api.exception import \
     BucketCreationException, GetBucketInfoFailed, \
     BucketCompactionException

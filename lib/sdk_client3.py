@@ -5,6 +5,34 @@ Created on Mar 14, 2019
 
 """
 
+class SDKClient(object):
+    sdk_connections = 0
+    sdk_disconnections = 0
+
+    def __init__(self, rest, bucket, info=None,  username="Administrator",
+                 password="password",
+                 quiet=True, certpath=None, transcoder=None, compression=True):
+        self.log = logging.getLogger("test")
+        self.rest = rest
+        self.hosts = []
+        if rest.ip == "127.0.0.1":
+            self.hosts.append("{0}:{1}".format(rest.ip, rest.port))
+            self.scheme = "http"
+        else:
+            self.hosts.append(rest.ip)
+            self.scheme = "couchbase"
+        self.username = username
+        self.password = password
+        if hasattr(bucket, 'name'):
+            self.bucket = bucket.name
+        else:
+            self.bucket = bucket
+        self.quiet = quiet
+        self.transcoder = transcoder
+        self.default_timeout = 0
+        self.cluster = None
+        SDKClient.sdk_connections += 1
+"""
 import json as pyJson
 import logging
 
@@ -51,9 +79,6 @@ class SDKClient(object):
     sdk_disconnections = 0
     doc_op = doc_op()
     sub_doc_op = sub_doc_op()
-    """
-    Java SDK Client Implementation for testrunner - master branch
-    """
 
     def __init__(self, rest, bucket, info=None,  username="Administrator",
                  password="password",
@@ -829,23 +854,6 @@ class SDKClient(object):
                              create_path=False,
                              xattr=False,
                              cas=0):
-        """
-
-        :param keys: Documents to perform sub_doc operations on.
-        Must be a dictionary with Keys and List of tuples for
-        path and value.
-        :param exp: Expiry of document
-        :param exp_unit: Expiry time unit
-        :param persist_to: Persist to parameter
-        :param replicate_to: Replicate to parameter
-        :param timeout: timeout for the operation
-        :param time_unit: timeout time unit
-        :param durability: Durability level parameter
-        :param create_path: Boolean used to create sub_doc path if not exists
-        :param xattr: Boolean. If 'True', perform xattr operation
-        :param cas: CAS for the document to use
-        :return:
-        """
         mutate_in_specs = []
         for key, value in keys.items():
             mutate_in_spec = []
@@ -874,22 +882,6 @@ class SDKClient(object):
                              create_path=False,
                              xattr=False,
                              cas=0):
-        """
-        :param keys: Documents to perform sub_doc operations on.
-        Must be a dictionary with Keys and List of tuples for
-        path and value.
-        :param exp: Expiry of document
-        :param exp_unit: Expiry time unit
-        :param persist_to: Persist to parameter
-        :param replicate_to: Replicate to parameter
-        :param timeout: timeout for the operation
-        :param time_unit: timeout time unit
-        :param durability: Durability level parameter
-        :param create_path: Boolean used to create sub_doc path if not exists
-        :param xattr: Boolean. If 'True', perform xattr operation
-        :param cas: CAS for the document to use
-        :return:
-        """
         mutate_in_specs = []
         for key, value in keys.items():
             mutate_in_spec = []
@@ -913,16 +905,6 @@ class SDKClient(object):
 
     def sub_doc_read_multi(self, keys, timeout=5, time_unit="seconds",
                            xattr=False):
-        """
-        :param keys: Documents to perform sub_doc operations on.
-                     Must be a dictionary with Keys and List of tuples for
-                     path.
-        :param timeout: timeout for the operation
-        :param time_unit: timeout time unit
-        :param xattr: Boolean. If 'True', perform xattr operation
-        :param cas: CAS for the document to use
-        :return:
-        """
         mutate_in_specs = []
         keys_to_loop = keys.keys()
         keys_to_loop.sort()
@@ -948,21 +930,6 @@ class SDKClient(object):
                              durability="",
                              xattr=False,
                              cas=0):
-        """
-        :param keys: Documents to perform sub_doc operations on.
-        Must be a dictionary with Keys and List of tuples for
-        path and value.
-        :param exp: Expiry of document
-        :param exp_unit: Expiry time unit
-        :param persist_to: Persist to parameter
-        :param replicate_to: Replicate to parameter
-        :param timeout: timeout for the operation
-        :param time_unit: timeout time unit
-        :param durability: Durability level parameter
-        :param xattr: Boolean. If 'True', perform xattr operation
-        :param cas: CAS for the document to use
-        :return:
-        """
         mutate_in_specs = []
         for key, value in keys.items():
             mutate_in_spec = []
@@ -990,22 +957,6 @@ class SDKClient(object):
                               durability="",
                               xattr=False,
                               cas=0):
-        """
-
-        :param keys: Documents to perform sub_doc operations on.
-        Must be a dictionary with Keys and List of tuples for
-        path and value.
-        :param exp: Expiry of document
-        :param exp_unit: Expiry time unit
-        :param persist_to: Persist to parameter
-        :param replicate_to: Replicate to parameter
-        :param timeout: timeout for the operation
-        :param time_unit: timeout time unit
-        :param durability: Durability level parameter
-        :param xattr: Boolean. If 'True', perform xattr operation
-        :param cas: CAS for the document to use
-        :return:
-        """
         mutate_in_specs = []
         for key, value in keys.items():
             mutate_in_spec = []
@@ -1026,3 +977,4 @@ class SDKClient(object):
             persist_to, replicate_to, durability, timeout, time_unit,
             cas)
         return self.__translate_upsert_multi_sub_doc_result(result)
+"""

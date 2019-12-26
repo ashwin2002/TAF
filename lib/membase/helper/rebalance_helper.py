@@ -483,7 +483,7 @@ class RebalanceHelper:
             return True, ejections
         try:
             return rest.monitorRebalance(), ejections
-        except RebalanceFailedException, e:
+        except RebalanceFailedException as e:
             log.error("failed to rebalance %s servers out: %s" % (how_many, e))
             return False, ejections
 
@@ -516,8 +516,8 @@ class RebalanceHelper:
             map(lambda server: rest.add_node(servers[0].rest_username,
                                              servers[0].rest_password,
                                              server.ip, server.port), additions)
-        except (ServerAlreadyJoinedException,
-                ServerSelfJoinException, AddNodeException), e:
+        except (ServerAlreadyJoinedException as
+                ServerSelfJoinException as AddNodeException), e:
             log.error("failed to swap rebalance - addition failed %s: %s"
                       % (additions, e))
             return False, []
@@ -525,7 +525,7 @@ class RebalanceHelper:
         cur_ids = map(lambda node: node.id, rest.node_statuses())
         try:
             rest.rebalance(otpNodes=cur_ids, ejectedNodes=ejections)
-        except InvalidArgumentException, e:
+        except InvalidArgumentException as e:
             log.error("failed to swap rebalance - rebalance failed :%s" % e)
             return False, []
 
@@ -534,7 +534,7 @@ class RebalanceHelper:
 
         try:
             return rest.monitorRebalance(), ejections + additions
-        except RebalanceFailedException, e:
+        except RebalanceFailedException as e:
             log.error("failed to swap rebalance %s servers: %s" % (how_many, e))
             return False, ejections + additions
 

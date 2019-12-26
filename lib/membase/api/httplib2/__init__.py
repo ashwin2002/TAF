@@ -38,13 +38,13 @@ except ImportError:
 
     md = md5.new()
 import email
-import email.Utils
-import email.Message
-import StringIO
+import email.utils
+import email.message
+from io import StringIO
 import gzip
 import zlib
 import http.client as httplib
-import urlparse
+import urllib.parse as urlparse
 import base64
 import os
 import copy
@@ -71,7 +71,7 @@ except ImportError:
     socks = None
 
 if sys.version_info >= (2, 3):
-    from iri2uri import iri2uri
+    from membase.api.httplib2.iri2uri import iri2uri
 else:
     def iri2uri(uri):
         return uri
@@ -325,7 +325,7 @@ def _entry_disposition(response_headers, request_headers):
     elif cc.has_key('only-if-cached'):
         retval = "FRESH"
     elif response_headers.has_key('date'):
-        date = calendar.timegm(email.Utils.parsedate_tz(response_headers['date']))
+        date = calendar.timegm(email.utils.parsedate_tz(response_headers['date']))
         now = time.time()
         current_age = max(0, now - date)
         if cc_response.has_key('max-age'):
@@ -334,7 +334,7 @@ def _entry_disposition(response_headers, request_headers):
             except ValueError:
                 freshness_lifetime = 0
         elif response_headers.has_key('expires'):
-            expires = email.Utils.parsedate_tz(response_headers['expires'])
+            expires = email.utils.parsedate_tz(response_headers['expires'])
             if None == expires:
                 freshness_lifetime = 0
             else:
@@ -383,7 +383,7 @@ def _updateCache(request_headers, response_headers, content, cache, cachekey):
         if cc.has_key('no-store') or cc_response.has_key('no-store'):
             cache.delete(cachekey)
         else:
-            info = email.Message.Message()
+            info = email.message.Message()
             for key, value in response_headers.iteritems():
                 if key not in ['status', 'content-encoding', 'transfer-encoding']:
                     info[key] = value
@@ -768,7 +768,7 @@ class HTTPConnectionWithTimeout(httplib.HTTPConnection):
                 if self.debuglevel > 0:
                     print("connect: (%s, %s)" % (self.host, self.port))
                 self.sock.connect(sa)
-            except socket.error, msg:
+            except socket.error as msg:
                 if self.debuglevel > 0:
                     print('connect fail:', (self.host, self.port))
                 if self.sock:
@@ -777,7 +777,7 @@ class HTTPConnectionWithTimeout(httplib.HTTPConnection):
                 continue
             break
         if not self.sock:
-            raise socket.error, msg
+            raise Exception(socket.error + msg)
 
 
 class HTTPSConnectionWithTimeout(httplib.HTTPSConnection):
@@ -891,7 +891,7 @@ the same interface as FileCache."""
             except socket.gaierror:
                 conn.close()
                 raise ServerNotFoundError("Unable to find the server at %s" % conn.host)
-            except httplib.HTTPException, e:
+            except httplib.HTTPException as e:
                 if not i:
                     conn.close()
                     conn.connect()
@@ -1037,7 +1037,7 @@ a string that contains the response entity body.
             if method in ["GET", "HEAD"] and 'range' not in headers:
                 headers['accept-encoding'] = 'compress, gzip'
 
-            info = email.Message.Message()
+            info = email.message.Message()
             cached_value = None
             if self.cache:
                 cachekey = defrag_uri
@@ -1124,7 +1124,7 @@ a string that contains the response entity body.
             else:
                 (response, content) = self._request(conn, authority, uri, request_uri, method, body, headers,
                                                     redirections, cachekey)
-        except Exception, e:
+        except Exception as e:
             if self.force_exception_to_status_code:
                 if isinstance(e, HttpLib2ErrorWithResponse):
                     response = e.response
@@ -1154,7 +1154,7 @@ a string that contains the response entity body.
 
 
 class Response(dict):
-    """An object more like email.Message than httplib.HTTPResponse."""
+    """An object more like email.message than httplib.HTTPResponse."""
 
     """Is this response from our local cache"""
     fromcache = False
@@ -1171,7 +1171,7 @@ class Response(dict):
     previous = None
 
     def __init__(self, info):
-        # info is either an email.Message or
+        # info is either an email.message or
         # an httplib.HTTPResponse object.
         if isinstance(info, httplib.HTTPResponse):
             for key, value in info.getheaders():
@@ -1180,7 +1180,7 @@ class Response(dict):
             self['status'] = str(self.status)
             self.reason = info.reason
             self.version = info.version
-        elif isinstance(info, email.Message.Message):
+        elif isinstance(info, email.message.Message):
             for key, value in info.items():
                 self[key] = value
             self.status = int(self['status'])
@@ -1194,4 +1194,4 @@ class Response(dict):
         if name == 'dict':
             return self
         else:
-            raise AttributeError, name
+            raise AttributeError

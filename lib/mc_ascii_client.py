@@ -5,17 +5,16 @@ Ascii memcached test client.
 
 import socket
 import select
-import exceptions
 
 import memcacheConstants
 
-class MemcachedError(exceptions.Exception):
+class MemcachedError(Exception):
     """Error raised when a command fails."""
 
     def __init__(self, status, msg):
-        supermsg='Memcached error #' + `status`
+        supermsg = 'Memcached error #%s' % status
         if msg: supermsg += ":  " + msg
-        exceptions.Exception.__init__(self, supermsg)
+        Exception.__init__(self, supermsg)
 
         self.status=status
         self.msg=msg
@@ -44,7 +43,7 @@ class MemcachedAsciiClient(object):
         if w:
             self.s.send(cmd)
         else:
-            raise exceptions.EOFError("Timeout waiting for socket send. from {0}".format(self.host))
+            raise EOFError("Timeout waiting for socket send. from {0}".format(self.host))
 
     def _recvMsg(self):
         r, _, _ = select.select([self.s], [], [], self.timeout)
@@ -53,11 +52,11 @@ class MemcachedAsciiClient(object):
             while not response.endswith("\r\n"):
                 data = self.s.recv(1)
                 if data == '':
-                    raise exceptions.EOFError("Got empty data (remote died?). from {0}".format(self.host))
+                    raise EOFError("Got empty data (remote died?). from {0}".format(self.host))
                 response += data
             return response[:-2]
         else:
-            raise exceptions.EOFError("Timeout waiting for socket recv. from {0}".format(self.host))
+            raise EOFError("Timeout waiting for socket recv. from {0}".format(self.host))
 
     def _recvData(self, length):
         r, _, _ = select.select([self.s], [], [], self.timeout)
@@ -66,11 +65,11 @@ class MemcachedAsciiClient(object):
             while len(response) < length + 2:
                 data = self.s.recv((length + 2) - len(response))
                 if data == '':
-                    raise exceptions.EOFError("Got empty data (remote died?). from {0}".format(self.host))
+                    raise EOFError("Got empty data (remote died?). from {0}".format(self.host))
                 response += data
             return response[:-2]
         else:
-            raise exceptions.EOFError("Timeout waiting for socket recv. from {0}".format(self.host))
+            raise EOFError("Timeout waiting for socket recv. from {0}".format(self.host))
 
     def _doStore(self, cmd):
         """Send a command and await its response."""
@@ -103,7 +102,7 @@ class MemcachedAsciiClient(object):
         error = ""
         while msg.split(" ")[0] == "STAT" or \
                 msg.split(" ")[0] == "VERSION":
-            print "msg:",msg
+            print("msg:", msg)
             kind = msg.split(" ")[0]
             key = msg.split(" ")[1]
             if kind == "VERSION":

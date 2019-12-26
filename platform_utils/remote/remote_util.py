@@ -43,9 +43,10 @@ from testconstants import RPM_DIS_NAME, SYSTEMD_SERVER
 from testconstants import NR_INSTALL_LOCATION_FILE
 
 from membase.api.rest_client import RestConnection, RestHelper
+"""
 from com.jcraft.jsch import JSchException, JSchAuthCancelException, \
                             JSchPartialAuthException, SftpException
-
+"""
 try:
     from com.jcraft.jsch import JSch
     from org.python.core.util import FileUtil
@@ -4776,7 +4777,7 @@ class RemoteMachineShellConnection:
                 else:
                     self.log.info("** You need to set rest password at ini file **")
                     rest_password = "password"
-            except Exception, ex:
+            except Exception as ex:
                 if ex:
                     print(ex)
             self.extract_remote_info()

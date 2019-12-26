@@ -479,7 +479,7 @@ class MembaseServerInstaller(Installer):
     def install(self, params, queue=None):
         try:
             build = self.build_url(params)
-        except Exception, e:
+        except Exception as e:
             if queue:
                 queue.put(False)
             raise e
@@ -759,7 +759,7 @@ class CouchbaseServerInstaller(Installer):
         try:
             if "linux_repo" not in params:
                 build = self.build_url(params)
-        except Exception, e:
+        except Exception as e:
             if queue:
                 queue.put(False)
             raise e
@@ -870,7 +870,7 @@ class CouchbaseServerInstaller(Installer):
                         rest_vbuckets = int(params["rest_vbuckets"])
                         ClusterOperationHelper.set_vbuckets(server,
                                                             rest_vbuckets)
-                except BaseException, e:
+                except BaseException as e:
                     success = False
                     log.error("installation failed: {0}".format(e))
             remote_client.disconnect()
@@ -887,7 +887,7 @@ class CouchbaseServerInstaller(Installer):
                     cb_edition, remote_client)
                 log.info('wait 5 seconds for Couchbase server to start')
                 time.sleep(5)
-            except BaseException, e:
+            except BaseException as e:
                 success = False
                 log.error("installation failed: {0}".format(e))
             remote_client.disconnect()
@@ -993,7 +993,7 @@ class MoxiInstaller(Installer):
     def install(self, params, queue=None):
         try:
             build = self.build_url(params)
-        except Exception, e:
+        except Exception as e:
             if queue:
                 queue.put(False)
             raise e
@@ -1011,7 +1011,7 @@ class MoxiInstaller(Installer):
                 return False
             try:
                 success = remote_client.install_moxi(build)
-            except BaseException, e:
+            except BaseException as e:
                 success = False
                 log.error("installation failed: {0}".format(e))
         remote_client.disconnect()
