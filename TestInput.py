@@ -130,7 +130,7 @@ class TestInputParser:
         ini_file = ''
         for option, argument in opts:
             if option == '-h':
-                print 'usage'
+                print('Usage')
                 return
             if option == '-i':
                 has_ini = True
@@ -437,7 +437,7 @@ class TestInputParser:
             need_help = False
             for option, argument in opts:
                 if option == "-h":
-                    print 'usage...'
+                    print('Usage...')
                     need_help = True
                     break
             if need_help:

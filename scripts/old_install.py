@@ -41,7 +41,7 @@ import TestInput
 
 
 def usage(err=None):
-    print """\
+    print("""\
 Syntax: install.py [options]
 
 Options:
@@ -91,7 +91,7 @@ Examples:
    install.py -i /tmp/ubuntu.ini -p product=cb,version=5.0.0-1900,
    nr_install_dir=testnow1
 
-"""
+""")
     sys.exit(err)
 
 
@@ -250,9 +250,9 @@ class Installer(object):
 
         remote_client = RemoteMachineShellConnection(server)
         info = remote_client.extract_remote_info()
-        print "*** OS version of this server %s is %s ***" % (
-            remote_client.ip,
-            info.distribution_version)
+        print("*** OS version of this server %s is %s ***"
+              % (remote_client.ip,
+                 info.distribution_version))
         if info.distribution_version.lower() == "suse 12":
             if version[:5] not in COUCHBASE_FROM_SPOCK:
                 mesg = "%s does not support cb version %s" % \
@@ -283,7 +283,7 @@ class Installer(object):
                     time.sleep(5)
                     os.system('kill %d' % os.getpid())
             else:
-                print "Incorrect version format"
+                print("Incorrect version format")
                 sys.exit()
 
         if ok and not linux_repo:
@@ -308,7 +308,7 @@ class Installer(object):
                                              "server-analytics") + \
                              CB_VERSION_NAME[version[:3]] + "/"
             elif "moxi-server" in names and version[:5] != "2.5.2":
-                print "Version: ", version
+                print("Version: ", version)
                 """
                 moxi repo:
                    http://172.23.120.24/builds/latestbuilds/moxi/4.6
@@ -1268,20 +1268,19 @@ class InstallerJob(object):
             try:
                 installer.uninstall(_params)
                 if "product" in params and params["product"] in [
-                    "couchbase", "couchbase-server", "cb"]:
+                        "couchbase", "couchbase-server", "cb"]:
                     success = True
                     for server in servers:
                         shell = RemoteMachineShellConnection(server)
                         success &= not shell.is_couchbase_installed()
                         shell.disconnect()
                     if not success:
-                        print "Server:{0}.Couchbase is still" + \
-                              " installed after uninstall".format(
-                                  server)
+                        print("Server:%s. Couchbase is still "
+                              "installed after uninstall" % server)
                         return success
-                print "uninstall succeeded"
+                print("uninstall succeeded")
             except Exception as ex:
-                print "unable to complete the uninstallation: ", ex
+                print("unable to complete the uninstallation: ", ex)
         success = True
         for installer, _params in installers:
             try:
@@ -1289,10 +1288,10 @@ class InstallerJob(object):
                 try:
                     installer.initialize(_params)
                 except Exception as ex:
-                    print "unable to initialize the server after " \
-                          "successful installation", ex
+                    print("unable to initialize the server after "
+                          "successful installation", ex)
             except Exception as ex:
-                print "unable to complete the installation: ", ex
+                print("unable to complete the installation: ", ex)
         return success
 
     def parallel_install(self, servers, params):
@@ -1330,7 +1329,7 @@ class InstallerJob(object):
             t.start()
         for t in uninstall_threads:
             t.join()
-            print "thread {0} finished".format(t.name)
+            print("thread '%s' finished" % t.name)
         if "product" in params and params["product"] in ["couchbase",
                                                          "couchbase-server",
                                                          "cb"]:
@@ -1340,26 +1339,25 @@ class InstallerJob(object):
                 success &= not shell.is_couchbase_installed()
                 shell.disconnect()
             if not success:
-                print "Server:{0}.Couchbase is still installed after " \
-                      "uninstall".format(
-                    server)
+                print("Server:%s. Couchbase is still installed after "
+                      "uninstall" % server)
                 return success
         for t in install_threads:
             t.start()
         for t in install_threads:
             t.join()
-            print "thread {0} finished".format(t.name)
+            print("thread '%s' finished" % t.name)
         while not queue.empty():
             success &= queue.get()
         if not success:
-            print "installation failed. initializer threads were " \
-                  "skipped"
+            print("installation failed. initializer threads were "
+                  "skipped")
             return success
         for t in initializer_threads:
             t.start()
         for t in initializer_threads:
             t.join()
-            print "thread {0} finished".format(t.name)
+            print("thread '%s' finished" % t.name)
         """ remove any capture files left after install windows """
         remote_client = RemoteMachineShellConnection(servers[0])
         type = remote_client.extract_remote_info().distribution_type
@@ -1508,7 +1506,7 @@ def main():
                                                     input.test_params)
     if "product" in input.test_params and input.test_params[
         "product"] in ["couchbase", "couchbase-server", "cb"]:
-        print "verify installation..."
+        print("verify installation...")
         success = True
         for server in input.servers:
             shell = RemoteMachineShellConnection(server)
@@ -1518,7 +1516,7 @@ def main():
             sys.exit(log_install_failed)
     if "product" in input.test_params and input.test_params[
         "product"] in ["moxi", "moxi-server"]:
-        print "verify installation..."
+        print("verify installation...")
         success = True
         for server in input.servers:
             success &= RemoteMachineShellConnection(

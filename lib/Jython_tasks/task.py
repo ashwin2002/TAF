@@ -4044,7 +4044,6 @@ class MonitorViewFragmentationTask(Task):
     def call(self):
         self.start_task()
         # sanity check of fragmentation value
-        print "self.fragmentation_value: %s" % self.fragmentation_value
         if self.fragmentation_value < 0 or self.fragmentation_value > 100:
             err_msg = "Invalid value for fragmentation %d" % self.fragmentation_value
             self.set_exception(Exception(err_msg))

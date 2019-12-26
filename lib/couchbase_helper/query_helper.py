@@ -156,19 +156,14 @@ class QueryHelper(object):
                     sql_template = sql_template[1:]
                     sql_template = sql_template.replace("SUBTABLE", "simple_table_2 t_1")
 
-                print "sql_template after convert to value is {0} ".format(sql_template)
-
                 if "SUBTABLE" in sql_template:
                     n1ql_template = self._gen_sqlsubquery_to_nqlsubquery(sql_template)
                 else:
                     n1ql_template = self._gen_sql_to_nql(sql_template)
-                print "n1ql template is {0}".format(n1ql_template)
                 sql_template = sql_template.replace("SUBTABLE", "simple_table_2 t_1")
-                print sql_template
 
                 table_name = random.choice(new_table_map.keys())
                 inner_table_alias = new_table_map[table_name]["alias_name"]
-                print "inner_table_alias is %s" % inner_table_alias
 
                 sql_template = sql_template.replace("OUTERBUCKET.primary_key_id", "t_5.primary_key_id")
                 sql_template =  sql_template.replace("OUTERBUCKET.*", "t_5.*")
@@ -178,13 +173,11 @@ class QueryHelper(object):
                 n1ql_template = n1ql_template.replace("OUTERBUCKET", "simple_table_1 t_5")
                 n1ql_template = n1ql_template.replace("simple_table_2 t_1", "t_5.simple_table_2 t_1")
 
-                print "outer_table_alias is %s" % outer_table_alias
                 if "USE KEYS" in sql_template:
                     sql_template = sql_template.replace("USE KEYS", "")
                     if "OUTER_PRIMARY_KEY" in sql_template:
                         table_name = random.choice(outer_table_map.keys())
                         outer_table_alias = alias_name
-                        print "outer_table_alias 1 is {0}".format(outer_table_alias)
                         primary_key_field = outer_table_map[table_name]["primary_key_field"]
                         sql_template = sql_template.replace("OUTER_PRIMARY_KEY", "")
                         n1ql_template = n1ql_template.replace("OUTER_PRIMARY_KEY", alias_name+"."+primary_key_field)
@@ -295,7 +288,6 @@ class QueryHelper(object):
             new_n1ql = new_n1ql.replace("MYSQL_CLOSED_PAR", " ")
         for x in xrange(0, randint(0, 5)):
             alias_name = "tb_"+self._random_char() + str(count1)
-            print "alias name is {0}".format(alias_name)
             new_n1ql = "SELECT {0}.* FROM ({1}) {0}".format(alias_name, new_n1ql)
         new_sql = new_sql.replace("NOT_EQUALS", " NOT IN ")
         new_sql = new_sql.replace("EQUALS", " = ")
@@ -303,8 +295,6 @@ class QueryHelper(object):
         new_n1ql = new_n1ql.replace("EQUALS", " IN ")
         new_sql = new_sql.replace("RAW", "")
         new_n1ql = new_n1ql.replace("AND_OUTER_INNER_TABLE_PRIMARY_KEY_COMPARISON", "")
-        print "new n1ql is %s" % (new_n1ql)
-        print "new sql is %s" % (new_sql)
         return {"sql": new_sql, "n1ql": new_n1ql}, outer_table_map
 
     def _gen_query_with_subquery(self, sql="", table_map={}, count1=0):
@@ -2218,4 +2208,4 @@ class QueryHelper(object):
 
 if __name__ == "__main__":
     helper = QueryHelper()
-    print helper._convert_sql_template_to_value_nested_subqueries("CRAP1 TABLE_ALIAS.* CRAP2 TABLE_ALIAS.* FROM TABLE_ALIAS TABLE_ALIAS")
+    print(helper._convert_sql_template_to_value_nested_subqueries("CRAP1 TABLE_ALIAS.* CRAP2 TABLE_ALIAS.* FROM TABLE_ALIAS TABLE_ALIAS"))

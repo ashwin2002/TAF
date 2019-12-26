@@ -1,12 +1,12 @@
 from __future__ import generators
 
 """
-httplib2
+http
 
 A caching http interface that supports ETags and gzip
 to conserve bandwidth.
 
-Requires Python 2.3 or later
+Requires Python 3.0 or later
 
 Changelog:
 2007-08-18, Rick: Modified so it's able to use a socks proxy if needed.
@@ -43,7 +43,7 @@ import email.Message
 import StringIO
 import gzip
 import zlib
-import httplib
+import http.client as httplib
 import urlparse
 import base64
 import os
@@ -766,11 +766,11 @@ class HTTPConnectionWithTimeout(httplib.HTTPConnection):
                     self.sock.settimeout(self.timeout)
                     # End of difference from httplib.
                 if self.debuglevel > 0:
-                    print "connect: (%s, %s)" % (self.host, self.port)
+                    print("connect: (%s, %s)" % (self.host, self.port))
                 self.sock.connect(sa)
             except socket.error, msg:
                 if self.debuglevel > 0:
-                    print 'connect fail:', (self.host, self.port)
+                    print('connect fail:', (self.host, self.port))
                 if self.sock:
                     self.sock.close()
                 self.sock = None

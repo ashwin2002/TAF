@@ -1776,7 +1776,7 @@ class RemoteMachineShellConnection:
         self.test_log.info('/tmp/%s or /tmp/%s' % (build.name, build.product))
         command = ''
         if self.info.type.lower() == 'windows':
-            print "build name in couchbase upgrade    ", build.product_version
+            print("build name in couchbase upgrade    ", build.product_version)
             self.couchbase_upgrade_win(self.info.architecture_type,
                                        self.info.windows_name,
                                        build.product_version)
@@ -3186,7 +3186,6 @@ class RemoteMachineShellConnection:
             p = Popen(main_command, shell=True, stdout=PIPE, stderr=PIPE)
             stdout, stderro = p.communicate()
             output = stdout
-            print output
             time.sleep(1)
         """
         for cmd in subcommands:
@@ -3844,7 +3843,6 @@ class RemoteMachineShellConnection:
             for line in output:
                 size = line.strip().split('\t')
                 if size[0].isdigit():
-                    print size[0]
                     return size[0]
                 else:
                     return 0
@@ -4780,8 +4778,7 @@ class RemoteMachineShellConnection:
                     rest_password = "password"
             except Exception, ex:
                 if ex:
-                    print ex
-                pass
+                    print(ex)
             self.extract_remote_info()
             if self.info.type.lower() != 'windows':
                 self.log.info("***** set NS_SERVER_CBAUTH env in linux *****")
@@ -4823,7 +4820,6 @@ class RemoteMachineShellConnection:
 
     def stop_current_python_running(self, mesg):
         os.system("ps aux | grep python | grep %d " % os.getpid())
-        print mesg
         self.sleep(5, "Delay kill pid %d in 5 seconds to printout message"
                       % os.getpid())
         os.system('kill %d' % os.getpid())

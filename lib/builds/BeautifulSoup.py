@@ -465,7 +465,6 @@ class Tag(PageElement):
         return apply(self.findAll, args, kwargs)
 
     def __getattr__(self, tag):
-        #print "Getattr %s.%s" % (self.__class__, tag)
         if len(tag) > 3 and tag.rfind('Tag') == len(tag)-3:
             return self.find(tag[:-3])
         elif tag.find('__'):
@@ -705,7 +704,6 @@ class SoupStrainer:
         return found
 
     def search(self, markup):
-        #print 'looking for %s in %s' % (self, markup)
         found = None
         # If given a list of items, scan it for a text element that
         # matches.
@@ -731,7 +729,6 @@ class SoupStrainer:
         return found
 
     def _matches(self, markup, matchAgainst):
-        #print "Matching %s against %s" % (markup, matchAgainst)
         result = False
         if matchAgainst == True and type(matchAgainst) == types.BooleanType:
             result = markup != None
@@ -923,7 +920,6 @@ class BeautifulStoneSoup(Tag, SGMLParser):
     def __getattr__(self, methodName):
         """This method routes method call requests to either the SGMLParser
         superclass or the Tag superclass, depending on the method name."""
-        #print "__getattr__ called on %s.%s" % (self.__class__, methodName)
 
         if methodName.find('start_') == 0 or methodName.find('end_') == 0 \
                or methodName.find('do_') == 0:
@@ -958,13 +954,11 @@ class BeautifulStoneSoup(Tag, SGMLParser):
            isinstance(self.currentTag.contents[0], NavigableString):
             self.currentTag.string = self.currentTag.contents[0]
 
-        #print "Pop", tag.name
         if self.tagStack:
             self.currentTag = self.tagStack[-1]
         return self.currentTag
 
     def pushTag(self, tag):
-        #print "Push", tag.name
         if self.currentTag:
             self.currentTag.append(tag)
         self.tagStack.append(tag)
@@ -996,7 +990,6 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         instance of the given tag. If inclusivePop is false, pops the tag
         stack up to but *not* including the most recent instqance of
         the given tag."""
-        #print "Popping to %s" % name
         if name == self.ROOT_TAG_NAME:
             return
 
@@ -1061,7 +1054,6 @@ class BeautifulStoneSoup(Tag, SGMLParser):
             self._popToTag(popTo, inclusive)
 
     def unknown_starttag(self, name, attrs, selfClosing=0):
-        #print "Start tag %s" % name
         if self.quoteStack:
             #This is not a real tag.
             #print "<%s> is not real!" % name
@@ -1085,13 +1077,11 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         if selfClosing or self.isSelfClosingTag(name):
             self.popTag()
         if name in self.QUOTE_TAGS:
-            #print "Beginning quote (%s)" % name
             self.quoteStack.append(name)
             self.literal = 1
         return tag
 
     def unknown_endtag(self, name):
-        #print "End tag %s" % name
         if self.quoteStack and self.quoteStack[-1] != name:
             #This is not a real end tag.
             #print "</%s> is not real!" % name
@@ -1526,15 +1516,11 @@ class UnicodeDammit:
                       markup)
 
         try:
-            # print "Trying to convert document to %s" % proposed
             u = self._toUnicode(markup, proposed)
             self.markup = u
             self.originalEncoding = proposed
         except Exception, e:
-            # print "That didn't work!"
-            # print e
             return None
-        #print "Correct encoding: %s" % proposed
         return self.markup
 
     def _toUnicode(self, data, encoding):
@@ -1708,4 +1694,4 @@ class UnicodeDammit:
 if __name__ == '__main__':
     import sys
     soup = BeautifulStoneSoup(sys.stdin.read())
-    print soup.prettify()
+    print(soup.prettify())

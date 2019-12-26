@@ -17,7 +17,7 @@ log = logging.getLogger()
 
 
 def usage(error=None):
-    print """\
+    print("""\
 Syntax: ssh.py [options] [command]
 
 Options:
@@ -31,7 +31,7 @@ Available keys:
 Examples:
  ssh.py -i /tmp/ubuntu.ini -p script=/tmp/set_date.sh
  ssh.py -i /tmp/ubuntu.ini -p parallel=false ls -l /tmp/core*
-"""
+""")
     sys.exit(error)
 
 
@@ -43,15 +43,14 @@ class CommandRunner(object):
     def run(self):
         remote_client = RemoteMachineShellConnection(self.server)
         output, error = remote_client.execute_command(self.command)
-        print self.server.ip
-        print "\n".join(output)
-        print "\n".join(error)
+        print("\n".join(output))
+        print("\n".join(error))
 
 
 class ScriptRunner(object):
     def __init__(self, server, script):
         self.server = server
-        with open(script) as  f:
+        with open(script) as f:
             self.script_content = f.read()
         self.script_name = "/tmp/" + str(uuid.uuid4())
 
@@ -60,9 +59,8 @@ class ScriptRunner(object):
         remote_client.create_file(self.script_name, self.script_content)
         output, error = remote_client.execute_command(
             "chmod 777 {0} ; {0} ; rm -f {0}".format(self.script_name))
-        print self.server.ip
-        print "\n".join(output)
-        print "\n".join(error)
+        print("\n".join(output))
+        print("\n".join(error))
 
 
 class RemoteJob(object):
@@ -79,7 +77,7 @@ class RemoteJob(object):
             try:
                 remote.run()
             except Exception as ex:
-                print "unable to complete the job: {0}".format(ex)
+                print("unable to complete the job: {0}".format(ex))
 
     def parallel_remote(self, input):
         remotes = []

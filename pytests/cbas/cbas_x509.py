@@ -63,7 +63,6 @@ class x509tests(BaseTestCase):
         self.log.info (" list of server {0}".format(copy_servers))
         
     def tearDown(self):
-        print "Into Teardown"
         self._reset_original()
         shell = RemoteMachineShellConnection(x509main.SLAVE_HOST)
         shell.execute_command("rm " + x509main.CACERTFILEPATH)

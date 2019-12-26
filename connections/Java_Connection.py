@@ -47,7 +47,8 @@ class SDKClient(object):
                 .timeoutConfig(TimeoutConfig.builder().kvTimeout(Duration.ofSeconds(10)))
                 .build())
         except CouchbaseException:
-            print "cannot login from user: %s/%s"%(self.username, self.password)
+            print("Cannot login from user: %s/%s"
+                  % (self.username, self.password))
             raise
 
     def reconnectCluster(self):

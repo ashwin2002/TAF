@@ -225,7 +225,6 @@ class RebalanceDurability(RebalanceBaseTest):
                     commit=True, durability=self.durability_level, sync=True,
                     num_threads=1,record_fail=True,defer=self.defer))
                 self.num_items=self.num_items+num_of_docs_to_insert
-                print "the value of num_items are {}".format(self.num_items)
             else:
                 tasks.append(self.task.async_load_gen_docs(
                     self.cluster, def_bucket, gen_create, "create", exp=0,

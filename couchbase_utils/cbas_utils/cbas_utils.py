@@ -772,7 +772,7 @@ class CbasUtil:
             elif mode == "async":
                 if status == "running" and handle:
                     self.log.debug("--- Thread %s: success ---", name)
-                    print handle
+                    print(handle)
                     self.handles.append(handle)
                     self.success_count += 1
                 else:

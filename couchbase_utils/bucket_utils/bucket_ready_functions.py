@@ -2438,7 +2438,7 @@ class BucketUtils:
                     self.log.error("Task '%s' failed" % task.thread_name)
                 result = result and task.result
         except Exception as e:
-            print e
+            print(e)
             for task in tasks:
                 task.cancel()
             raise Exception("Failed to get expected results for view query after {0} sec"

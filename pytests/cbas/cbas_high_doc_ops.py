@@ -11,6 +11,7 @@ from bucket_utils.Bucket import Bucket as buck
 import time
 from pytests.cbas.cbas_utils import cbas_utils
 
+
 class QueryRunner(Callable):
     def __init__(self, query, num_queries, cbas_util):
         self.num_queries = num_queries
@@ -21,14 +22,16 @@ class QueryRunner(Callable):
         self.exception = None
         self.cbas_util = cbas_util
         self.statement = query
- 
+        self.log = logging.getLogger("test")
+
     def __str__(self):
         if self.exception:
             return "[%s] %s download error %s in %.2fs" % \
                 (self.thread_used, self.num_queries, self.exception,
                  self.completed - self.started, ) #, self.result)
         elif self.completed:
-            print "Time: %s"%str(time.strftime("%H:%M:%S", time.gmtime(time.time())))
+            self.log.info("Time: %s" % str(time.strftime("%H:%M:%S",
+                                                         time.gmtime(time.time()))))
             return "[%s] %s items loaded in %.2fs" % \
                 (self.thread_used, self.loaded,
                  self.completed - self.started, ) #, self.result)
@@ -56,7 +59,7 @@ def shutdown_and_await_termination(pool, timeout):
         if not pool.awaitTermination(timeout, TimeUnit.SECONDS):
             pool.shutdownNow()
             if (not pool.awaitTermination(timeout, TimeUnit.SECONDS)):
-                print >> sys.stderr, "Pool did not terminate"
+                self.log.error("Pool did not terminate")
     except InterruptedException, ex:
         # (Re-)Cancel if current thread also interrupted
         pool.shutdownNow()
@@ -154,7 +157,7 @@ class analytics_high_doc_ops(CBASBaseTest):
            'SELECT VALUE u FROM `GleambookUsers_ds` u WHERE u.user_since >= "2010-11-13T16-48-15" AND u.user_since < "2010-12-13T16-48-15" limit 1;',
            ]
         nodes_in_cluster= [self.servers[0],self.cbas_node]
-        print "Start Time: %s"%str(time.strftime("%H:%M:%S", time.gmtime(time.time())))
+        self.log.info("Start Time: %s" % str(time.strftime("%H:%M:%S", time.gmtime(time.time()))))
         
         ########################################################################################################################
         self.log.info("Step 1: Start the test with 2 KV and 2 CBAS nodes")
@@ -262,8 +265,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         
         delete_thread.join()
@@ -302,8 +305,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         load_thread.join()
         
@@ -343,8 +346,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         
         delete_thread.join()
@@ -375,8 +378,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         load_thread.join()
  
@@ -420,10 +423,10 @@ class analytics_high_doc_ops(CBASBaseTest):
         reached = RestHelper(self.rest).rebalance_reached(wait_step=120)
         self.assertTrue(reached, "rebalance failed, stuck or did not complete")
         self.sleep(20)
-         
+
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
          
         ########################################################################################################################
@@ -460,8 +463,8 @@ class analytics_high_doc_ops(CBASBaseTest):
         futures = pool.invokeAll(executors)
         
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         load_thread.join()
         
@@ -499,8 +502,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         
         delete_thread.join()
@@ -532,8 +535,8 @@ class analytics_high_doc_ops(CBASBaseTest):
         nodes_in_cluster = [node for node in nodes_in_cluster if node not in self.cbas_servers[-1:]]
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         load_thread.join()
  
@@ -572,8 +575,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         
         delete_thread.join()
@@ -610,8 +613,8 @@ class analytics_high_doc_ops(CBASBaseTest):
         nodes_in_cluster.remove(self.cbas_node)
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         load_thread.join()
         
@@ -651,8 +654,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         
         delete_thread.join()
@@ -691,8 +694,8 @@ class analytics_high_doc_ops(CBASBaseTest):
         nodes_in_cluster += [self.kv_servers[1]]
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         load_thread.join()
         ########################################################################################################################
@@ -731,8 +734,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         
         delete_thread.join()
@@ -769,8 +772,8 @@ class analytics_high_doc_ops(CBASBaseTest):
         
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         load_thread.join()
         ########################################################################################################################
@@ -808,8 +811,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         
         delete_thread.join()
@@ -848,8 +851,8 @@ class analytics_high_doc_ops(CBASBaseTest):
          
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         load_thread.join()
         ########################################################################################################################
@@ -888,8 +891,8 @@ class analytics_high_doc_ops(CBASBaseTest):
             executors.append(QueryRunner(random.choice(queries),num_query,self.cbas_util))
         futures = pool.invokeAll(executors)
         for future in futures:
-            print future.get(num_executors, TimeUnit.SECONDS)
-        print "Executors completed!!"
+            self.log.info(future.get(num_executors, TimeUnit.SECONDS))
+        self.log.info("Executors completed!!")
         shutdown_and_await_termination(pool, num_executors)
         
         delete_thread.join()
@@ -897,7 +900,6 @@ class analytics_high_doc_ops(CBASBaseTest):
         ########################################################################################################################
         self.log.info("Step 60: Verify the docs count.")
         self.validate_items_count() 
-                 
  
-        print "End Time: %s"%str(time.strftime("%H:%M:%S", time.gmtime(time.time())))
+        self.log.info("End Time: %s"%str(time.strftime("%H:%M:%S", time.gmtime(time.time()))))
 

@@ -73,7 +73,7 @@ class GetCheckpointsHelper(object):
                                                                                              checkpoint_attributes[
                                                                                              "num_checkpoints"]))
             for alarm in alarms:
-                print alarm
+                print(alarm)
             time.sleep(interval)
 
 

@@ -388,7 +388,7 @@ class RestConnection(object):
             if content is not None:
                 print("{0}: {1}".format(api, content))
             else:
-                print e
+                print(e)
             return content, False
 
     def rename_node(self, hostname, username='Administrator',
@@ -909,7 +909,6 @@ class RestConnection(object):
                   .format(server.ip, self.index_port) + 'listRebalanceTokens'
         else:
             api = self.baseUrl + 'listRebalanceTokens'
-        print api
         status, content, _ = self._http_request(api, 'GET')
         if status:
             return content
@@ -2854,7 +2853,6 @@ class RestConnection(object):
                     for node in tmp:
                         node["hostname"] = node["hostname"].split(":")
                         node["hostname"] = node["hostname"][0]
-                        print node["hostname"][0]
                         nodes.append(node["hostname"])
                     zones[zone_info["groups"][i]["name"]] = nodes
         return zones
